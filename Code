@@ -32,7 +32,7 @@ dupe_check(ship_row, ship_col, ship_row2, ship_col2)
 
 def play(board, ship_row, ship_col, ship_row2, ship_col2):
   print "Find both battleships!"
-  print "Choose a column and row, 0 - 4"
+  print "Choose a column and row, 1 - 5"
   replay = "y"
   while replay == "y":
     board = []
@@ -60,12 +60,12 @@ def play(board, ship_row, ship_col, ship_row2, ship_col2):
       print
   
       try:
-        guess_row = int(raw_input("Guess Row: "))
+        guess_row = int(raw_input("Guess Row: ")) -1
       except ValueError:
         print "That wasn't even a number. Let's just go with 2."
         guess_row = 2
       try:
-        guess_col = int(raw_input("Guess Col: "))
+        guess_col = int(raw_input("Guess Col: ")) -1
       except ValueError:
         print "That wasn't even a number. Let's just go with 2."
         guess_col = 2
