@@ -16,7 +16,7 @@ def random_row(board):
 def random_col(board):
   return randint(0, len(board[0]) - 1)
 
-def dupe_check(row1, col1, row2, col2):
+def dupe_check(board, row1, col1, row2, col2):
   ship_row2 = random_row(board)
   ship_col2 = random_col(board)
   while row1 == row2 and col1 == col2:
@@ -24,42 +24,22 @@ def dupe_check(row1, col1, row2, col2):
     ship_col2 = random_col(board)
   return (ship_row2, ship_col2)
 
-def stats(board, row1, col1, row2, col2):
-  global sunk
-  global won
-  global lost
+def update_stats(board, stats, row1, col1, row2, col2):
   if board[row1][col1] == "X" and board[row2][col2] == "X":
-    sunk += 2
-    won += 1
+    stats['sunk'] += 2
+    stats['won'] += 1
   elif board[row1][col1] == "X" or board[row2][col2] == "X":
-    sunk += 1
-    lost += 1
+    stats['sunk'] += 1
+    stats['lost'] += 1
   else:
-    lost += 1
-  stats = float(won) / (won + lost)
-  print "You've sunk", sunk, "ships!"
-  print "You've won", won, "games and lost", lost, "games."
-  print "Your victory rate is", stats
-  return (sunk, won, lost)
+    stats['lost'] += 1
+  percent_won = float(stats['won']) / (stats['won'] + stats['lost'])
+  print "You've sunk", stats['sunk'], "ships!"
+  print "You've won", stats['won'], "games and lost", stats['lost'], "games."
+  print "Your victory rate is", percent_won
 
-board = []
 
-create_board(board)
-print_board(board)
-
-ship_row = random_row(board)
-ship_col = random_col(board)
-
-ship_row2 = random_row(board)
-ship_col2 = random_col(board)
-    
-dupe_check(ship_row, ship_col, ship_row2, ship_col2)
-
-sunk = 0
-won = 0
-lost = 0
-
-def play(board, ship_row, ship_col, ship_row2, ship_col2):
+def play(board, stats, ship_row, ship_col, ship_row2, ship_col2):
   print "Find both battleships!"
   print "Choose a column and row, 1 - 5"
   replay = "y"
@@ -76,7 +56,7 @@ def play(board, ship_row, ship_col, ship_row2, ship_col2):
     ship_row2 = random_row(board)
     ship_col2 = random_col(board)
     
-    dupe_check(ship_row, ship_col, ship_row2, ship_col2)
+    dupe_check(board, ship_row, ship_col, ship_row2, ship_col2)
     
     ship1 = 0
     
@@ -169,7 +149,7 @@ def play(board, ship_row, ship_col, ship_row2, ship_col2):
             board[ship_row2][ship_col2] = "x"
         print_board(board)
     
-    stats(board, ship_row, ship_col, ship_row2, ship_col2)
+    update_stats(board, stats, ship_row, ship_col, ship_row2, ship_col2)
     
     replay = raw_input("Would you like to play again? (y/n) ")
     if replay != "y" and replay != "n":
@@ -177,6 +157,26 @@ def play(board, ship_row, ship_col, ship_row2, ship_col2):
       replay = raw_input("Would you like to play again? (y/n)")
     if replay == "n":
       print "See you next time!"
-      
-play(board, ship_row, ship_col, ship_row2, ship_col2)
 
+def main():
+  board = []
+
+  create_board(board)
+  print_board(board)
+
+  ship_row = random_row(board)
+  ship_col = random_col(board)
+
+  ship_row2 = random_row(board)
+  ship_col2 = random_col(board)
+
+  stats = {'sunk': 0,
+           'won' : 0,
+           'lost': 0}
+
+  dupe_check(board, ship_row, ship_col, ship_row2, ship_col2)
+
+  play(board, stats, ship_row, ship_col, ship_row2, ship_col2)
+
+if __name__ == "__main__":
+  main()
